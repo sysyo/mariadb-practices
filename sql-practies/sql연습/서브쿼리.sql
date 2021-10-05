@@ -105,6 +105,7 @@ order by avg(b.salary) asc
 -- 대혁 50001
 -- 둘리 50002
 
+-- sol 1 : join
 select a.first_name, b.salary
 from employees a, salaries b
 where a.emp_no = b.emp_no
@@ -112,6 +113,43 @@ and b.to_date = '9999-01-01'
 and b.salary >= 50000
 order by b.salary;
    
+-- sol 2 : subquery(in)
+select emp_no, salary
+from salaries 
+where to_date = '9999-01-01'
+and salary >= 50000;
+
+-- sol 3 : subquery (=any)
+select a.first_name, b.salary
+from employees a, salaries b
+where a.emp_no = b.emp_no
+and b.to_date = '9999-01-01'
+and (a.emp_no, b.salary) in (select emp_no, salary
+							 from salaries 
+							 where to_date = '9999-01-01'
+							 and salary >= 50000);
 
 
-   
+-- 실습문제 4 : 각 부서별로 최고 월급을 받는 직원의 이름과 월급을 출력하세요
+-- 대혁 40001
+-- 둘리 50000
+select a.dept_no, max(b.salary)
+from dept_emp a, salaries b
+where a.emp_no = b.emp_no
+and a.to_date = '9999-01-01'
+and b.to_date = '9999-01-01'
+group by a.dept_no;
+
+-- sol 1 : where wubquery = any(in)
+select d.dept_name, c.first_name, b.salary
+from dept_emp a, salaries b, employees c, departments d
+where a.emp_no = b.emp_no
+and b.emp_no = c.emp_no
+and a.to_date = '9999-01-01'
+and b.to_date = '9999-01-01'
+and (a.dept_no, b.salary) in (select a.dept_no, max(b.salary)
+							  from dept_emp a, salaries b
+							  where a.emp_no = b.emp_no
+						      and a.to_date = '9999-01-01'
+							  and b.to_date = '9999-01-01'
+							  group by a.dept_no);
