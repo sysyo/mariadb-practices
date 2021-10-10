@@ -12,18 +12,17 @@ import java.util.logging.Logger;
 public class MyDriver implements Driver {
 	static {
 		try {
-			DriverManager.registerDriver(new MyDriver());
 			System.out.println("static code area");
+			DriverManager.registerDriver(new MyDriver());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public Connection connect(String url, Properties info) throws SQLException {
-		System.out.println("url : " + url);
-		System.out.println("info : " + info);
+		System.out.println("url:" + url);
+		System.out.println("info:" + info);
 		return new MyConnection();
 	}
 
